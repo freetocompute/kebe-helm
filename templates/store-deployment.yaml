@@ -29,9 +29,9 @@ spec:
             - containerPort: 8080
           env:
             - name: KEBE_DATABASE_HOST
-              value: postgres-store
+              value: {{ .Values.store.database.host }}
             - name: KEBE_MINIO_HOST
-              value: minio:9000
+              value: {{ .Values.store.minio.host }}
 ---
 apiVersion: v1
 kind: Service
@@ -57,5 +57,5 @@ spec:
     - name: http
       port: 8080
       targetPort: 8080
-      nodePort: 30080
+      nodePort: {{ .Values.store.nodePort }}
       protocol: TCP
