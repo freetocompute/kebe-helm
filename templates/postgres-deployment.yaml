@@ -82,7 +82,7 @@ spec:
   ports:
     - port: 5432
       targetPort: 5432
-      nodePort: 30032
+      nodePort: {{ .Values.store.postgres.nodePort }}
       protocol: TCP
   selector:
-    app: postgres-store 
+    app: postgres-store

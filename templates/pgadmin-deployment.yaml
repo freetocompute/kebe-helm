@@ -28,9 +28,9 @@ spec:
             - containerPort: 80
           env:
             - name: PGADMIN_DEFAULT_PASSWORD
-              value: "password"
+              value: "{{ .Values.pgadmin.password }}"
             - name: PGADMIN_DEFAULT_EMAIL
-              value: "kebe@kebe.org"
+              value: "{{ .Values.pgadmin.email }}"
 ---
 apiVersion: v1
 kind: Service
@@ -56,5 +56,5 @@ spec:
     - name: http
       port: 80
       targetPort: 80
-      nodePort: 31080
+      nodePort: {{ .Values.pgadmin.nodePort }}
       protocol: TCP

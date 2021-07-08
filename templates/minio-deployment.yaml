@@ -55,9 +55,9 @@ spec:
               mountPath: /data
           env:
             - name: MINIO_ROOT_USER
-              value: "user"
+              value: "{{ .Values.store.minio.accessKey }}"
             - name: MINIO_ROOT_PASSWORD
-              value: "password"
+              value: "{{ .Values.store.minio.secretKey }}"
           ports:
             - containerPort: 9000
       volumes:
@@ -89,5 +89,5 @@ spec:
     - name: http
       port: 9000
       targetPort: 9000
-      nodePort: 30900
+      nodePort: {{ .Values.store.minio.nodePort }}
       protocol: TCP

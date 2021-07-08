@@ -15,6 +15,20 @@ store:
     db: store
     user: manager
     password: password
+    nodePort: 30032
+  nodePort: 30080
+  database:
+    host: postgres-store
+  minio:
+    host: minio:9000
+    accessKey: user
+    secretKey: password
+    nodePort: 30900
+
+pgadmin:
+  email: kebe@freetocompute.org
+  password: password
+  nodePort: 31080
 
 imagePullSecrets: []
 nameOverride: ""
