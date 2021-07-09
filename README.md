@@ -23,8 +23,16 @@ docker build -f build-aux/docker/Dockerfile.store -t <cluster>:32000/kebe-store:
 docker push <cluster>:32000/kebe-store:latest
 ```
 
-5. Run `helm install <name-of-your-deployment> .`
-6. Verify Minio is running at <server_ip_or_fdqn>:30900
+5. Build a workaround image for Minio and push it
+
+```
+cd docker
+docker build -t <cluster_ip>:32000/minio -f Dockerfile.minio .
+docker push <cluster_ip>:32000/minio
+```
+
+6. Run `helm install <name-of-your-deployment> .`
+6. Verify Minio is running at <server_ip_or_fdqn>:30901
 7. Verify PgAdmin4 is running at <server_ip_or_fdqn>:31080
 8. Login to PgAdmin4 add postgres-store as server and check database connection
 
