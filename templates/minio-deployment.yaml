@@ -21,7 +21,6 @@ metadata:
   labels:
     app: minio
 spec:
-  #storageClassName: manual
   accessModes:
     - ReadWriteMany
   resources:
@@ -33,14 +32,20 @@ kind: Deployment
 metadata:
   name: minio
 spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
   selector:
     matchLabels:
       app: minio
       tier: frontend
       track: stable
-  replicas: 1
   template:
     metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       labels:
         app: minio
         tier: frontend
@@ -48,8 +53,8 @@ spec:
     spec:
       containers:
         - name: minio
-          image: minio/minio
-          args: ["server", "/data"]
+          image: localhost:32000/minio
+          imagePullPolicy: {{ .Values.store.image.pullPolicy }}
           volumeMounts:
             - name: data
               mountPath: /data
@@ -58,8 +63,13 @@ spec:
               value: "{{ .Values.store.minio.accessKey }}"
             - name: MINIO_ROOT_PASSWORD
               value: "{{ .Values.store.minio.secretKey }}"
+            - name: CONSOLE_ADDRESS
+              value: ":{{ .Values.store.minio.console.nodePort }}"
+            - name: DATA_DIR
+              value: "/data"
           ports:
             - containerPort: 9000
+            - containerPort: {{ .Values.store.minio.console.nodePort }}
       volumes:
         - name: data
           persistentVolumeClaim:
@@ -74,7 +84,11 @@ spec:
     app: minio
     tier: frontend
   ports:
-    - port: 9000
+    - name: api
+      port: 9000
+      protocol: TCP
+    - name: console
+      port: {{ .Values.store.minio.console.nodePort }}
       protocol: TCP
 ---
 apiVersion: v1
@@ -89,5 +103,10 @@ spec:
     - name: http
       port: 9000
       targetPort: 9000
-      nodePort: {{ .Values.store.minio.nodePort }}
+      nodePort: {{ .Values.store.minio.api.nodePort }}
+      protocol: TCP
+    - name: http2
+      port: {{ .Values.store.minio.console.nodePort }}
+      targetPort: {{ .Values.store.minio.console.nodePort }}
+      nodePort: {{ .Values.store.minio.console.nodePort }}
       protocol: TCP

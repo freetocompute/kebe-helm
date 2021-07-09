@@ -23,7 +23,10 @@ store:
     host: minio:9000
     accessKey: user
     secretKey: password
-    nodePort: 30900
+    api:
+      nodePort: 30900
+    console:
+      nodePort: 30901
 
 pgadmin:
   email: kebe@freetocompute.org
